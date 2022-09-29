@@ -1,17 +1,32 @@
-import { IdeaProps } from './Idea';
-import { proxyWithComputed } from 'valtio/utils';
+import { IdeaProps } from './Idea'
+import { proxy } from 'valtio'
 
-export const createIdeaState = (): IdeaProps => {
-  const state = proxyWithComputed({
+export const createIdeaState = () => {
+  const state: IdeaProps = proxy({
     value: '',
-    onValueChange: (value: string) => state.value = value,
+    onValueChange(value: string) {
+      this.value = value
+    },
     upVotes: 0,
     downVotes: 0,
-    onUpVote: () => state.upVotes++,
-    onDownVote: () => state.downVotes++
-  }, {
-    rating: (snap) => snap.upVotes - snap.downVotes,
-  });
+    onUpVote() {
+      this.upVotes++
+    },
+    onDownVote() {
+      this.downVotes++
+    },
+    get rating() {
+      return this.upVotes - this.downVotes
+    },
+  })
 
-  return state;
+  return state
 }
+
+/* const stat = createIdeaState()
+stat.onValueChange('dfsdfdsf')
+stat.onUpVote()
+stat.onUpVote()
+stat.onUpVote()
+stat.onUpVote()
+console.log(stat, 'dfasdf'); */
